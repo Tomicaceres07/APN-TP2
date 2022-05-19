@@ -6,7 +6,8 @@ COPY requirements.txt /app
 RUN pip install -r requirements.txt
 
 # Ejercicio 5> Agregar al Dockerfile en ./app  la aplicación de linux "nano"
-RUN apt-get install nano
+RUN apt-get update
+RUN apt-get install nano /app
 
 COPY app.py /app
 
