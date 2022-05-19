@@ -1,0 +1,40 @@
+# Ejercicio 1> Agregar las variables de entorno necesarias para que la aplicacion "Flask" se conecte a MYSQL
+# Ejercicio 2> Agregar php my admin a este docker-compose, y agregar nuevos varietales en la tabla wines del esquema drinks
+# Ejercicio 3> Persistir el contenido de la base de datos mysql en disco
+# Ejercicio 4> Hostear dos contenedores con la aplicación flask en puertos diferentes en el host (no hay que cambiar la aplicación)
+# Ejercicio 5> Agregar al Dockerfile en ./app  la aplicación de linux "nano"
+
+version: "2"
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+    # Ejercicio 3> Persistir el contenido de la base de datos mysql en disco
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
+
+  app:
+    build: ./app
+    links:
+      - db
+    # Ejercicio 1> Agregar las variables de entorno necesarias para que la aplicacion "Flask" se conecte a MYSQL
+    environment:
+      DB_USER_NAME: username
+      DB_PASSWORD: password
+      NAME_HELLO: Tomi
+    # Ejercicio 4> Hostear dos contenedores con la aplicación flask en puertos diferentes en el host (no hay que cambiar la aplicación)
+    ports:
+      - 8830:5000 #8830 - localhost del host, 5000 del container
+
+  # Ejercicio 2> Agregar php my admin a este docker-compose, y agregar nuevos varietales en la tabla wines del esquema drinks
+  phpmyadmin:
+    image: phpmyadmin:5.2.0-fpm-alpine
+    restart: always
+    links:
+      - db
+    ports:
+      - 8080:80
